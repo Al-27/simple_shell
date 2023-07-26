@@ -8,7 +8,7 @@ typedef struct builtin
     void (*func)(int);
 }builtin_t;
 
-void (*run_builtin(char*));
+int run_builtin(char*);
 void handler(int);
 void print_env();
 

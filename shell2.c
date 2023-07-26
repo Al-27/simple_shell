@@ -22,7 +22,7 @@ void free_all(void* comm, char** args)
             
         } 
         free(args);
-        ptmp = null;
+        args = null;
     }
         
 }
@@ -73,7 +73,7 @@ char** splitStr(char* path, int nDelim, ...)
         /*
             split @path 
         */
-    char **paths = null, *curp = path, *delimiter=malloc(sizeof(char) * nDelim), *last_occ = null;
+    char **paths = null, *curp = path, *delimiter= malloc(nDelim + 1), *last_occ = null;
     int iLength_of_paths = 1, i = 0 , j = 0, d = 0, loop = 1;
     long int diff = 0;
     va_list va_delim;
@@ -86,9 +86,13 @@ char** splitStr(char* path, int nDelim, ...)
         {
             delimiter[d] = (char)va_arg(va_delim,int);
             j = byte_occuren(path,delimiter[d]) ;
-            iLength_of_paths += j ? j : 1 ;
             
-            if( delimiter[d] == '&' || delimiter[d] == '|')
+            if(strchr("&|;",delimiter[d]) && j > 1)
+                iLength_of_paths += j + 1 ;
+            else
+                iLength_of_paths += j ;
+                
+            if( strchr("&|",delimiter[d]) )
                 iLength_of_paths -= (iLength_of_paths-1)/2;
             
             last_occ = strrchr(path,delimiter[d]) ;
@@ -114,7 +118,7 @@ char** splitStr(char* path, int nDelim, ...)
     
    /* paths[iLength_of_paths] = null;*/
     
-    for(; i < iLength_of_paths-1 ; i++)
+    for(; i < iLength_of_paths ; i++)
     {
         
         paths[i] = malloc(BUFF_SIZE);
@@ -136,6 +140,8 @@ char** splitStr(char* path, int nDelim, ...)
         }
         
         paths[i][j] = '\0';
+        if(j == 0 && *path)
+            i--;
         
         while(1)
         {
@@ -157,12 +163,20 @@ char** splitStr(char* path, int nDelim, ...)
         loop = 1;
     }
     
-    if(paths[i-1][0]=='\0')
+    
+    for(i = iLength_of_paths-1; i >= 0 ; i--)
     {
-        free(paths[i-1]);
-        i--;
+        if( paths[i][0] == '\0' )
+        {
+            free(paths[i]);
+            paths[i] = null;
+        }
+        else
+            break;
     }
-    paths[i] = null;
+    
+    free(delimiter);
+    delimiter = null;
     
     return paths;
 }

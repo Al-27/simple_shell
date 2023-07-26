@@ -4,11 +4,12 @@
 
 extern char *filename;
 extern int commands_run;
+extern int testing;
 
 char *trimAll(char *str)
 {
     char *newStr = malloc(BUFF_SIZE), *beg = str, lastChar = 0;
-    int i = 0, all_whitespace = 1;
+    int i = 0, all_whitespace = 1, backward = 1;
     
     if( !str )
         return null;
@@ -26,18 +27,20 @@ char *trimAll(char *str)
         beg++;
     }
     
-    beg = newStr + i;/* new we try to trim the end of the string */
-    beg--, i--;
+    beg = newStr + i - 1;/* new we try to trim the end of the string */
     
     while(beg != newStr)
     {
-        if(*beg == ' ');
+        if(backward && *beg != ' ') break;
+        
+        if(*beg == ' ') i--;
         else{
             newStr[i] = *beg;
             i++;
             break;
         }
-        *beg-=1,i-=1;
+        backward=0;
+        beg--;i--;
     }
     /*while(*(beg+i)) i++;*/
     newStr[i] = '\0';
@@ -53,7 +56,7 @@ char *trimAll(char *str)
     
     return newStr;
 }
-
+/* useless, and buggy (too much work to be done)
 char *getExec(char* command)
 {
     char *bin = malloc(32), *cur = null;
@@ -69,18 +72,19 @@ char *getExec(char* command)
         i++, cur++;
     }
     bin[i] = '\0';
-    
-    free((cur-i));
+    cur -= i;
+    free((cur));
     cur = null;
     
     return bin;
-} 
+} */
 
 void noninteractive()
 {
     char* fd_buffer = null, **commands = null; 
-    int eof = 1, cmdsLoop ;
+    int eof = 1, cmdsLoop, newline ;
     Commands_st *command_st = null, *head;
+    FILE* sh2 =fopen("shell2","r");/************************/
     
     cmdsLoop = 0;
     
@@ -92,50 +96,51 @@ void noninteractive()
         wait for, then read input
     */
     memset(fd_buffer,0,BUFF_SIZE);
-    eof = read(STDIN_FILENO,fd_buffer,BUFF_SIZE);
+    
+    if(testing){ eof = read(sh2->_fileno,fd_buffer,BUFF_SIZE);   fclose(sh2);}
+    else eof = read(stdin->_fileno,fd_buffer,BUFF_SIZE);
+    
     fd_buffer[eof] = '\0';
     
-    if(eof > 0 ) 
-    {
-        
-        fd_buffer = trimAll(fd_buffer);
-        commands = splitStr(fd_buffer,2, '\n',';');
-        if( !**commands )
-            commands_run++;
-        
-        while( *commands )
+    if(eof > 1 ) 
         {
-            head = command_st = newCommand(command_st, *commands); 
             
-            command_st = getLastElem(command_st);
+            fd_buffer = trimAll(fd_buffer);
+            commands = splitStr(fd_buffer,2, '\n',';');
             
-            while( *command_st->commands && **command_st->commands) 
+            while( *commands )
             {
-                run_builtin( *command_st->commands );
-                run_command( *command_st->commands );
-                cmdSeek(command_st,0);
-                commands_run++;
-            }
+                head = command_st = newCommand(command_st, *commands);
+                command_st = getLastElem(command_st);
+                newline = 1;     
                 
-            cmdSeek(command_st,1);
-            
-            
-            command_st = head;                    
-            commands++;
-            cmdsLoop++;
+                while( *command_st->commands ) 
+                {
+                    handle_command(command_st);                    
+                    cmdSeek(command_st,0);
+                    commands_run++;
+                    newline = 0;
+                }
+                
+                if(newline)
+                    commands_run++;
+                
+                cmdSeek(command_st,1);
+                
+                
+                command_st = head;                    
+                commands++;
+                cmdsLoop++;
+            }
+            commands -= cmdsLoop;
+        
         }
-        commands -= cmdsLoop;
-    
-    }
-    else
-        commands_run++;
+        else
+            commands_run++;
     
     free_st(command_st);
-    free_all(fd_buffer,null);
-    free_all(null,commands);
-    command_st = null;
-    head = null;
-    commands = null;
+    free_all(fd_buffer,commands);
+    command_st = head = null, commands = null;
     fd_buffer = null;
     
   

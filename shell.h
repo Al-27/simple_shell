@@ -3,7 +3,7 @@
  
 
 void interactive();
-void handle_command(char** command,char*** );
+void handle_command(Commands_st* cmd_st);
 int run_command(char*);
 void trim(char** str,int get_exec);
 char** get_args(char* comnd);
@@ -19,8 +19,9 @@ char* does_exist(char* filename);
 
 /*
     shell3.c
+    
+char *getExec(char* command);
 */
 void noninteractive();
 char *trimAll(char *str);
-char *getExec(char* command);
 #endif

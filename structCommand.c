@@ -9,7 +9,6 @@ Commands_st* newCommand(Commands_st *head, char* command)
     new->commands = splitStr(command, 2, '&', '|');
     new->pLogicOps = getLogOps(command);
     new->offset_cmd = 0;
-    new->offset_logic = 0;
     
     if(!head)
     {
@@ -31,11 +30,22 @@ Commands_st* newCommand(Commands_st *head, char* command)
 
 int* getLogOps(char* str)
 {
-    int *logicals = malloc( sizeof(int) * ( byte_occuren(str,'|')/2 + byte_occuren(str,'&')/2 ) + 1 ),
-         i = 0;
+    int *logicals = null, i = 0, nLogics = 0;
     char lastc = ' ';
     
-    for(;*str ; str++)
+    if(!str)
+    {
+        return null;
+    }
+    
+    nLogics = ( byte_occuren(str,'|')/2 + byte_occuren(str,'&')/2 );
+    
+    if(nLogics)
+    {
+        logicals = malloc( sizeof(int) * nLogics );
+    }
+    
+    for(;*str && i < nLogics; str++)
     {
         if(*str != lastc )
         {
@@ -50,6 +60,7 @@ int* getLogOps(char* str)
                 i++;
             }
         }
+        lastc = *str;
         
     }
     
@@ -77,22 +88,15 @@ void cmdSeek(Commands_st *head, int start)
         
         if(start)
         {
-            head->commands -= head->offset_cmd;
-            head->pLogicOps -= head->offset_logic;
+            if( head->offset_cmd ) head->commands -= head->offset_cmd;
             head->offset_cmd = 0;
-            head->offset_logic = 0;
         }
         else 
         {
             if(*(head->commands))
             {
                 head->offset_cmd++;
-                head->commands += head->offset_cmd;
-            }
-            if(*head->pLogicOps)
-            {
-                head->offset_logic++;
-                head->pLogicOps += head->offset_logic;
+                head->commands++;
             }
         }
         

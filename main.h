@@ -24,7 +24,6 @@ struct ShellCommands
     int* pLogicOps;
     int failed; /* Command failed to execute (ie. not found)*/
     int offset_cmd;
-    int offset_logic;
     Commands_st *next;
 } ;
 

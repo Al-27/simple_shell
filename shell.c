@@ -12,7 +12,7 @@ extern char* filename;
 void interactive()
 {
     char* fd_buffer = null, **commands = null ; 
-    int eof = 1, cmdsLoop;
+    int eof = 1, cmdsLoop, newline;
     pid_t papaID = getpid();
     Commands_st *command_st = null, *head;
     
@@ -33,28 +33,29 @@ void interactive()
         eof = read(STDIN_FILENO,fd_buffer,BUFF_SIZE);
         fd_buffer[eof] = '\0';
         
-        if(eof > 0 ) 
+        if(eof > 1 ) 
         {
             
             fd_buffer = trimAll(fd_buffer);
             commands = splitStr(fd_buffer,2, '\n',';');
-            if( !**commands )
-                commands_run++;
             
             while( *commands )
             {
                 head = command_st = newCommand(command_st, *commands);
-                
                 command_st = getLastElem(command_st);
+                newline = 1;     
                 
-                while( *command_st->commands && **command_st->commands) 
+                while( *command_st->commands ) 
                 {
-                    run_builtin( *command_st->commands );
-                    run_command( *command_st->commands );
+                    handle_command(command_st);                    
                     cmdSeek(command_st,0);
                     commands_run++;
+                    newline = 0;
                 }
-                    
+                
+                if(newline)
+                    commands_run++;
+                
                 cmdSeek(command_st,1);
                 
                 
@@ -69,10 +70,8 @@ void interactive()
             commands_run++;
         
         free_st(command_st);
-        free_all(fd_buffer,null);
-        free_all(null,commands);
-        command_st = null;
-        head = null;
+        free_all(fd_buffer,commands);
+        command_st = head = null;
         commands = null;
         fd_buffer = null;
     }
@@ -80,12 +79,22 @@ void interactive()
     /*if(eof == 0) write(STDOUT_FILENO, "\n",1);*/
 }
 
-void handle_command(char** command, char*** args)
+void handle_command(Commands_st* cmd_st)
 {
-    
-    *args = get_args(*command);
-    *command = getExec( trimAll(*command) );
-    *command = does_exist(*command);
+    int offset = cmd_st->offset_cmd;
+    if( offset == 0)
+    {
+        cmd_st->failed = run_builtin( *cmd_st->commands ) ?
+                                run_command( *cmd_st->commands ) : 0;
+    }
+    else
+    {
+         if( !cmd_st->failed && cmd_st->pLogicOps[offset-1]  == OR ) ;
+         else {
+            cmd_st->failed = run_builtin( *cmd_st->commands ) ?
+                                    run_command( *cmd_st->commands ) : 0;
+        }
+    }
 }
 
 int run_command(char *cm_st)
@@ -94,7 +103,8 @@ int run_command(char *cm_st)
     int stat_loc = 0;
     pid_t child = -1;
     
-    arg = get_args(cm_st), command = getExec(cm_st);
+    arg = get_args(cm_st);
+    command = strdup(arg[0]);
     command = does_exist(command);
     
     if(!command || !arg) return 0;
@@ -116,11 +126,11 @@ int run_command(char *cm_st)
         } while (!WIFEXITED(stat_loc) && !WIFSIGNALED(stat_loc));
         WEXITSTATUS(stat_loc);
         
-        return WEXITSTATUS(stat_loc);
+        stat_loc = WEXITSTATUS(stat_loc);
     }
     
     free_all(command,arg);
-    return 0;
+    return stat_loc;
 }
 
 void trim(char **str,int get_exec)

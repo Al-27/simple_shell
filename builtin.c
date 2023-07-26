@@ -2,7 +2,7 @@
 #include "builtin.h"
 
 
-void (*run_builtin(char* comm))
+int run_builtin(char* comm)
 {
     int i = 0;
     builtin_t bi_t[] = 
@@ -14,12 +14,13 @@ void (*run_builtin(char* comm))
     
     for(i = 0; i < (int)(sizeof(bi_t)/sizeof(builtin_t)); i++)
     {
-        if(strcmp(bi_t[i].command, comm) == 0)
+        if(strcmp(bi_t[i].command, comm) == 0){
             bi_t[i].func(i);
+            return 0;    
+        }
     }
     
-    return null; 
-    
+    return 1;
 }
 
 
