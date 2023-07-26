@@ -84,7 +84,7 @@ void noninteractive()
     char* fd_buffer = null, **commands = null; 
     int eof = 1, cmdsLoop, newline ;
     Commands_st *command_st = null, *head;
-    FILE* sh2 =fopen("shell2","r");/************************/
+    FILE* sh2 =null;/************************/
     
     cmdsLoop = 0;
     
@@ -97,7 +97,7 @@ void noninteractive()
     */
     memset(fd_buffer,0,BUFF_SIZE);
     
-    if(testing){ eof = read(sh2->_fileno,fd_buffer,BUFF_SIZE);   fclose(sh2);}
+    if(testing){sh2 =fopen("shell2","r"); eof = read(sh2->_fileno,fd_buffer,BUFF_SIZE);   fclose(sh2);}
     else eof = read(stdin->_fileno,fd_buffer,BUFF_SIZE);
     
     fd_buffer[eof] = '\0';
