@@ -97,7 +97,7 @@ void noninteractive()
     */
     memset(fd_buffer,0,BUFF_SIZE);
     
-    if(testing){sh2 =fopen("shell2","r"); eof = read(sh2->_fileno,fd_buffer,BUFF_SIZE);   fclose(sh2);}
+    if(testing){ sh2=fopen("shell2","r"); eof = read(sh2->_fileno,fd_buffer,BUFF_SIZE);   fclose(sh2);}
     else eof = read(stdin->_fileno,fd_buffer,BUFF_SIZE);
     
     fd_buffer[eof] = '\0';
@@ -107,32 +107,36 @@ void noninteractive()
             
             fd_buffer = trimAll(fd_buffer);
             commands = splitStr(fd_buffer,2, '\n',';');
-            
-            while( *commands )
-            {
-                head = command_st = newCommand(command_st, *commands);
-                command_st = getLastElem(command_st);
-                newline = 1;     
-                
-                while( *command_st->commands ) 
+            if(commands){
+                while( *commands )
                 {
-                    handle_command(command_st);                    
-                    cmdSeek(command_st,0);
-                    commands_run++;
-                    newline = 0;
+                    head = command_st = newCommand(command_st, *commands);
+                    command_st = getLastElem(command_st);
+                    newline = 1;     
+                    
+                    while( *command_st->commands ) 
+                    {
+                        handle_command(command_st);                    
+                        cmdSeek(command_st,0);
+                        commands_run++;
+                        newline = 0;
+                    }
+                    
+                    if(newline)
+                        commands_run++;
+                    
+                    cmdSeek(command_st,1);
+                    
+                    
+                    command_st = head;                    
+                    commands++;
+                    cmdsLoop++;
                 }
-                
-                if(newline)
-                    commands_run++;
-                
-                cmdSeek(command_st,1);
-                
-                
-                command_st = head;                    
-                commands++;
-                cmdsLoop++;
+                commands -= cmdsLoop;
             }
-            commands -= cmdsLoop;
+            {
+                commands_run++;
+            }
         
         }
         else
