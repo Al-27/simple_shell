@@ -37,7 +37,7 @@ char *trimAll(char *str)
             i++;
             break;
         }
-        *beg--,i--;
+        *beg-=1,i-=1;
     }
     /*while(*(beg+i)) i++;*/
     newStr[i] = '\0';
@@ -78,9 +78,8 @@ char *getExec(char* command)
 
 void noninteractive()
 {
-    char* fd_buffer = null, **commands = null,**args = null ; 
+    char* fd_buffer = null, **commands = null; 
     int eof = 1, cmdsLoop ;
-    pid_t papaID = getpid();
     Commands_st *command_st = null, *head;
     
     cmdsLoop = 0;
@@ -106,8 +105,7 @@ void noninteractive()
         
         while( *commands )
         {
-            head = command_st = newCommand(command_st, *commands);
-            //handle_command(&(*commands),&args);
+            head = command_st = newCommand(command_st, *commands); 
             
             command_st = getLastElem(command_st);
             

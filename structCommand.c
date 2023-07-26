@@ -108,4 +108,6 @@ Commands_st* getLastElem(Commands_st *head)
         getLastElem(head->next);
     else   
         return head;
+    
+    return getLastElem(head->next);
 }

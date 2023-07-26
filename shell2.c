@@ -73,7 +73,7 @@ char** splitStr(char* path, int nDelim, ...)
         /*
             split @path 
         */
-    char **paths = null, *curp = path, delimiter[nDelim], *last_occ = null;
+    char **paths = null, *curp = path, *delimiter=malloc(sizeof(char) * nDelim), *last_occ = null;
     int iLength_of_paths = 1, i = 0 , j = 0, d = 0, loop = 1;
     long int diff = 0;
     va_list va_delim;

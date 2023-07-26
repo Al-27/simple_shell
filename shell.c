@@ -44,7 +44,6 @@ void interactive()
             while( *commands )
             {
                 head = command_st = newCommand(command_st, *commands);
-                //handle_command(&(*commands),&args);
                 
                 command_st = getLastElem(command_st);
                 
