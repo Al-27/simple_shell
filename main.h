@@ -10,7 +10,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define BUFF_SIZE 256
+#define BUFF_SIZE 1024
 #define MAX_ARGS 20
 #define null ((void *)0)
 #define OR 0x01
