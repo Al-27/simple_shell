@@ -3,6 +3,7 @@
 #include "builtin.h"
 
 extern char *filename;
+extern char* shellFile;
 extern int commands_run;
 extern int testing;
 
@@ -97,7 +98,7 @@ void noninteractive()
     */
     memset(fd_buffer,0,BUFF_SIZE);
     
-    if(testing){ sh2=fopen("shell2","r"); eof = read(sh2->_fileno,fd_buffer,BUFF_SIZE);   fclose(sh2);}
+    if(testing){ sh2=fopen(shellFile,"r"); eof = read(sh2->_fileno,fd_buffer,BUFF_SIZE);   fclose(sh2);}
     else eof = read(stdin->_fileno,fd_buffer,BUFF_SIZE);
     
     fd_buffer[eof] = '\0';
