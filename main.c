@@ -16,6 +16,7 @@ int main(int __attribute__((unused)) argc, const char __attribute__((unused)) *a
     {
         shellFile = strdup(argv[testing]);
         noninteractive();
+        free(shellFile);
     }    
     free(filename);
     return 0;
