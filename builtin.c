@@ -1,7 +1,7 @@
 #include "main.h"
 #include "shell.h"
 #include "builtin.h"
-
+#include <errno.h>
 
 int run_builtin(char* comm)
 {
@@ -32,7 +32,10 @@ int run_builtin(char* comm)
         {
             if(!strcmp(*arg,"-"))
             {
-                chdir(getenv("OLDPWD"));
+                if(chdir(getenv("OLDPWD")) != 0)
+                {
+                    fprintf(stderr,"%s",strerror(errno));
+                } 
                 pwd = getcwd(NULL,0);
                 setenv("PWD",pwd,1);
                 free(pwd);
@@ -44,7 +47,10 @@ int run_builtin(char* comm)
                 memset(newpath,0,4096);
                 strcat(newpath,pwd); 
                 strcat(newpath,*arg); 
-                chdir(newpath);
+                 if(chdir(newpath) != 0)
+                {
+                    fprintf(stderr,"%s",strerror(errno));
+                } 
                 setenv("PWD",newpath,1);
                 free(newpath);
                 free(pwd);
@@ -52,7 +58,10 @@ int run_builtin(char* comm)
             
         }
         else{ 
-                chdir(getenv("HOME")); 
+                if(chdir(getenv("HOME")) != 0)
+                {
+                    fprintf(stderr,"%s",strerror(errno));
+                } 
                 pwd = getcwd(NULL,0);
                 setenv("PWD",pwd,1);
                 free(pwd);
