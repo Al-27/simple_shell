@@ -6,7 +6,7 @@
 int run_builtin(char* comm)
 {
     int i = 0;
-    char** arg = null, *pwd= null;
+    char** arg = null, *pwd= null, *newpath=null;
     builtin_t bi_t[] = 
     {
         {"exit", handler},
@@ -39,9 +39,14 @@ int run_builtin(char* comm)
             }
             else
             {
-                chdir(*arg);
                 pwd = getcwd(NULL,0);
-                setenv("PWD",pwd,1);
+                newpath = malloc(4096+1);
+                memset(newpath,0,4096);
+                strcat(newpath,pwd); 
+                strcat(newpath,*arg); 
+                chdir(newpath);
+                setenv("PWD",newpath,1);
+                free(newpath);
                 free(pwd);
             }
             
