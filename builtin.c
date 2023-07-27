@@ -84,7 +84,7 @@ void handler(int i)
     switch (i)
     {
     case 0:
-        exit(2);
+        exit(0);
         break;
     case 1:
         while(*env) fprintf(stdout,"%s\n",*env),env++;
