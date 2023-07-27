@@ -93,7 +93,6 @@ void handle_command(Commands_st* cmd_st)
          else { 
             cmd_st->failed = run_builtin( *cmd_st->commands ) ?
                                     run_command( *cmd_st->commands ) : 0;
-         if(cmd_st->failed && cmd_st->pLogicOps[offset-1] != OR && !isatty(STDIN_FILENO)) exit(cmd_st->failed);
         }
     }
 }
