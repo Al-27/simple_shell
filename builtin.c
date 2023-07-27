@@ -32,7 +32,7 @@ int run_builtin(char* comm)
         {
             if(!strcmp(*arg,"-"))
             {
-                chdir(getenv("HOME"));
+                chdir(getenv("OLDPWD"));
                 pwd = getcwd(NULL,0);
                 setenv("PWD",pwd,1);
                 free(pwd);
