@@ -33,10 +33,7 @@ int run_builtin(char* comm)
         {
             if(!strcmp(*arg,"-"))
             {
-                if(chdir(getenv("OLDPWD")) != 0)
-                {
-                    fprintf(stderr,"%s",strerror(errno));
-                } 
+                chdir(getenv("OLDPWD")) ;
                 pwd = getcwd(NULL,0);
                 setenv("PWD",pwd,1);
                 free(pwd);
@@ -48,10 +45,7 @@ int run_builtin(char* comm)
                 memset(newpath,0,4096);
                 strcat(newpath,pwd); 
                 strcat(newpath,*arg); 
-                 if(chdir(newpath) != 0)
-                {
-                    fprintf(stderr,"%s",strerror(errno));
-                } 
+                chdir(newpath) != 0;
                 setenv("PWD",newpath,1);
                 free(newpath);
                 free(pwd);
@@ -59,10 +53,7 @@ int run_builtin(char* comm)
             
         }
         else{ 
-                if(chdir(getenv("HOME")) != 0)
-                {
-                    fprintf(stderr,"%s",strerror(errno));
-                } 
+                chdir(getenv("HOME"));
                 pwd = getcwd(NULL,0);
                 setenv("PWD",pwd,1);
                 free(pwd);
