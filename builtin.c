@@ -9,21 +9,22 @@ int run_builtin(char* comm)
     char** arg = null, *pwd= null, *newpath=null;
     builtin_t bi_t[] = 
     {
-        {"exit", handler},
-        {"env", handler}
+        {"exit", exitb},
+        {"env", print_env}
         
     };
     
+    arg = get_args(comm);
     
     for(i = 0; i < (int)(sizeof(bi_t)/sizeof(builtin_t)); i++)
     {
-        if(strcmp(bi_t[i].command, comm) == 0){
-            bi_t[i].func(i);
+        if(strcmp(bi_t[i].command , *arg) == 0){
+            bi_t[i].func(arg);
+            free_all(null,arg);
             return 0;    
         }
     }
     
-    arg = get_args(comm);
     
     if( !strcmp("cd", arg[0]) )
     {
@@ -70,26 +71,27 @@ int run_builtin(char* comm)
         free_all(null,arg);
         return 0;
     }
-    else 
-        free_all(null,arg);
+    
+    free_all(null,arg);
     
     return 1;
 }
 
-
-void handler(int i)
+void print_env(char** arg)
 {
-    char **env = __environ;
-    
-    switch (i)
-    {
-    case 0:
-        exit(0);
-        break;
-    case 1:
-        while(*env) fprintf(stdout,"%s\n",*env),env++;
-        break;
-    default:
-        break;
-    }
+    arg = __environ;
+    while(*arg) fprintf(stdout,"%s\n",*arg),arg++;
 }
+
+void exitb(char** arg)
+{
+    arg++;
+    
+    if(*arg)
+    {
+        exit( strtol(*arg,null,10) );
+    }
+    
+    exit(0);
+}
+

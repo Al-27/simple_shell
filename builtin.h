@@ -5,12 +5,12 @@
 typedef struct builtin
 {
     char* command;
-    void (*func)(int);
+    void (*func)(char**);
 }builtin_t;
 
 int run_builtin(char*);
-void handler(int);
-void print_env();
+void print_env(char**);
+void exitb(char**);
 
  
 #endif
