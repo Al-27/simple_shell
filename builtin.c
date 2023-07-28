@@ -3,6 +3,11 @@
 #include "builtin.h"
 #include <errno.h>
 
+/**
+ * run_builtin - func
+ * @comm : arg 
+ * Return : type
+*/
 int run_builtin(char* comm)
 {
     int i = 0;
@@ -68,12 +73,20 @@ int run_builtin(char* comm)
     return 1;
 }
 
+/**
+ * print_env - func
+ * @arg : arg  
+*/
 void print_env(char** arg)
 {
     arg = __environ;
     while(*arg) fprintf(stdout,"%s\n",*arg),arg++;
 }
 
+/**
+ * exitb - func
+ * @arg : arg  
+*/
 void exitb(char** arg)
 {
     arg++;
