@@ -1,6 +1,12 @@
 #include "main.h"
 #include "shell.h"
 
+/**
+ * newCommand - func
+ * @head : arg
+ * @command :arg
+ * Return : type
+*/
 Commands_st* newCommand(Commands_st *head, char* command)
 {
     Commands_st *new = null, *cur = null;
@@ -28,6 +34,11 @@ Commands_st* newCommand(Commands_st *head, char* command)
     return head;
 }
 
+/**
+ * getLogOps - func
+ * @str : arg
+ * Return : type
+*/
 int* getLogOps(char* str)
 {
     int *logicals = null, i = 0, nLogics = 0;
@@ -67,6 +78,10 @@ int* getLogOps(char* str)
     return logicals;
 }
 
+/**
+ * free_st - func
+ * @st : atrg
+*/
 void free_st(Commands_st *st)
 {
     if(st)
@@ -81,6 +96,11 @@ void free_st(Commands_st *st)
     }
 }
 
+/**
+ * cmdSeek - func
+ * @head : arg
+ * @start : arg
+*/
 void cmdSeek(Commands_st *head, int start)
 {
     if(head)
@@ -103,6 +123,11 @@ void cmdSeek(Commands_st *head, int start)
     }
 }
 
+/**
+ * getLastElem - func
+ * @head : arg
+ * Return : type
+*/
 Commands_st* getLastElem(Commands_st *head)
 {
     if(!head)
