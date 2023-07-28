@@ -6,7 +6,13 @@ char* shellFile = null;
 int commands_run = 1;
 int testing  = 0;
 
-int main(int __attribute__((unused)) argc, const char __attribute__((unused)) *argv[], char __attribute__((unused)) *envp[])
+/**
+ * main - func
+ * @argc : arg 
+ * @argv : arg 
+ * Return : type
+*/
+int main(int __attribute__((unused)) argc, const char __attribute__((unused)) *argv[])
 {
     filename = strdup(argv[0]);
     testing = argc > 1 ? 1 : 0;
