@@ -45,7 +45,7 @@ int run_builtin(char* comm)
                 memset(newpath,0,4096);
                 strcat(newpath,pwd); 
                 strcat(newpath,*arg); 
-                chdir(newpath) != 0;
+                chdir(newpath);
                 setenv("PWD",newpath,1);
                 free(newpath);
                 free(pwd);
