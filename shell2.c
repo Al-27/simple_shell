@@ -1,6 +1,12 @@
 #include "main.h"
 #include "shell.h"
 
+
+/**
+ * free_all - func
+ * @comm : arg
+ * @args : arg 
+*/
 void free_all(void* comm, char** args)
 {
     char **ptmp = null;
@@ -27,7 +33,12 @@ void free_all(void* comm, char** args)
         
 }
 
-
+/**
+ * byte_occuren - func
+ * @str : arg
+ * @c : arg
+ * Return : type
+*/
 int byte_occuren(char* str, char c){
     
     int count = 0;
@@ -43,7 +54,11 @@ int byte_occuren(char* str, char c){
     return count;
 }
 
-
+/**
+ * getEnvVar - func
+ * @var : arg 
+ * Return : type
+*/
 char* getEnvVar(char* var)
 {
    char** env = __environ, *path = null;
@@ -67,7 +82,12 @@ char* getEnvVar(char* var)
    return null;
 }
 
-
+/**
+ * splitStr - func
+ * @path : arg
+ * @nDelim : arg
+ * Return : type
+*/
 char** splitStr(char* path, int nDelim, ...)
 {
         /*
@@ -181,7 +201,11 @@ char** splitStr(char* path, int nDelim, ...)
     return paths;
 }
 
-
+/**
+ * does_exist - func
+ * @filename : arg 
+ * Return : type
+*/
 char* does_exist(char* filename)
 {
     char** binPaths = null, *path= getEnvVar("PATH"), *baseFile = null, *fullpath=null;
