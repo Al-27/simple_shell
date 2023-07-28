@@ -7,6 +7,11 @@ extern char* shellFile;
 extern int commands_run;
 extern int testing;
 
+/**
+ * trimAll - func
+ * @str : arg
+ * Return : type
+*/
 char *trimAll(char *str)
 {
     char *newStr = malloc(BUFF_SIZE), *beg = str, lastChar = 0;
@@ -80,6 +85,10 @@ char *getExec(char* command)
     return bin;
 } */
 
+
+/**
+ * noninteractive - func
+*/
 void noninteractive()
 {
     char* fd_buffer = null, **commands = null; 
